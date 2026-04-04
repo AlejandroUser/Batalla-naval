@@ -1,7 +1,5 @@
 import pygame
 import sys
-import time
-
 pygame.init()
 
 ANCHO, ALTO = 1400, 900
