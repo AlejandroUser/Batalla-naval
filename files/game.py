@@ -36,13 +36,20 @@ def _canon_cpu(barco):
 #  vs CPU
 # ══════════════════════════════════════════════════════
 class JuegoCPU:
-    def __init__(self, screen):
+    def __init__(self, screen, flota_jugador=None):
         self.screen = screen
         self.clock  = pygame.time.Clock()
+        self._flota_jugador_inicial = flota_jugador
         self.reiniciar()
 
     def reiniciar(self):
-        self.flota_j = crear_flota_defecto(1)
+        from ships import crear_flota_defecto
+        if self._flota_jugador_inicial:
+            # Clonar la flota para que reiniciar funcione
+            from ships import crear_flota_desde_colocacion
+            self.flota_j = crear_flota_desde_colocacion(self._flota_jugador_inicial)
+        else:
+            self.flota_j = crear_flota_defecto(1)
         self.flota_c = crear_flota_defecto(2)
         self.dj_ag = set(); self.dj_im = set()
         self.dc_ag = set(); self.dc_im = set()
@@ -250,12 +257,18 @@ class JuegoCPU:
 #  LAN
 # ══════════════════════════════════════════════════════
 class JuegoLAN:
-    def __init__(self, screen, red, jugador_id):
+    def __init__(self, screen, red, jugador_id, flota_propia=None):
         self.screen=screen; self.clock=pygame.time.Clock()
-        self.red=red; self.jugador_id=jugador_id; self.reiniciar()
+        self.red=red; self.jugador_id=jugador_id
+        self._flota_propia_inicial = flota_propia
+        self.reiniciar()
 
     def reiniciar(self):
-        self.flota_p  = crear_flota_defecto(self.jugador_id)
+        from ships import crear_flota_defecto, crear_flota_desde_colocacion
+        if self._flota_propia_inicial:
+            self.flota_p = crear_flota_desde_colocacion(self._flota_propia_inicial)
+        else:
+            self.flota_p  = crear_flota_defecto(self.jugador_id)
         self.flota_e  = crear_flota_defecto(3-self.jugador_id)
         self.dp_ag=set(); self.dp_im=set()
         self.de_ag=set(); self.de_im=set()

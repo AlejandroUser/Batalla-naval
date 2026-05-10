@@ -137,5 +137,16 @@ def crear_flota_defecto(jugador):
     return flota
 
 
+def crear_flota_desde_colocacion(barcos_colocados):
+    """
+    Crea una flota limpia a partir de los barcos de la pantalla de placement.
+    """
+    flota = []
+    for b in barcos_colocados:
+        nuevo = Ship(b.nombre, b.largo, b.color, b.col, b.row, b.horizontal)
+        flota.append(nuevo)
+    return flota
+
+
 def flota_hundida(flota):
     return all(s.hundido for s in flota)

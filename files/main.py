@@ -1,5 +1,7 @@
 import pygame
 import sys
+import time
+
 pygame.init()
 
 ANCHO, ALTO = 1400, 900
@@ -257,8 +259,18 @@ def main():
             break
 
         elif resultado == "cpu":
+            from placement import PantallaColocacion
+            from ships import crear_flota_desde_colocacion
             from game import JuegoCPU
-            juego = JuegoCPU(screen)
+
+            # Colocación del jugador
+            pc = PantallaColocacion(screen, clock, jugador_id=1)
+            barcos = pc.run()
+            if barcos is None:
+                continue   # volvió al menú
+            flota_jugador = crear_flota_desde_colocacion(barcos)
+
+            juego = JuegoCPU(screen, flota_jugador=flota_jugador)
             r = juego.run()
             if r == "salir":
                 break
@@ -266,8 +278,18 @@ def main():
         elif resultado == "host":
             red, jugador_id = pantalla_host()
             if red is not None:
+                from placement import PantallaColocacion
+                from ships import crear_flota_desde_colocacion
                 from game import JuegoLAN
-                juego = JuegoLAN(screen, red, jugador_id)
+
+                pc = PantallaColocacion(screen, clock, jugador_id=jugador_id)
+                barcos = pc.run()
+                if barcos is None:
+                    red.cerrar()
+                    continue
+                flota = crear_flota_desde_colocacion(barcos)
+
+                juego = JuegoLAN(screen, red, jugador_id, flota_propia=flota)
                 r = juego.run()
                 red.cerrar()
                 if r == "salir":
@@ -276,8 +298,18 @@ def main():
         elif resultado == "cliente":
             red, jugador_id = pantalla_cliente()
             if red is not None:
+                from placement import PantallaColocacion
+                from ships import crear_flota_desde_colocacion
                 from game import JuegoLAN
-                juego = JuegoLAN(screen, red, jugador_id)
+
+                pc = PantallaColocacion(screen, clock, jugador_id=jugador_id)
+                barcos = pc.run()
+                if barcos is None:
+                    red.cerrar()
+                    continue
+                flota = crear_flota_desde_colocacion(barcos)
+
+                juego = JuegoLAN(screen, red, jugador_id, flota_propia=flota)
                 r = juego.run()
                 red.cerrar()
                 if r == "salir":
